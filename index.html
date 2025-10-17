@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ăn Cơm Bây Ơi</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">Ăn Cơm Bây Ơi</h1>
+      <nav class="nav">
+        <a href="#calc" class="nav-link" data-tab="calc">Tính tiền</a>
+        <a href="#wheel" class="nav-link" data-tab="wheel">Vòng quay</a>
+        <a href="#coming" class="nav-link" data-tab="coming">Coming soon</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- TÍNH TIỀN -->
+    <section id="calc" class="tab active">
+      <div class="grid">
+        <div class="card">
+          <div class="card-header">
+            <h2 id="formTitle">Tạo lần đi lấy mới</h2>
+            <span id="editBadge" class="chip hidden">Đang chỉnh sửa</span>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div>
+                <label>Ngày</label>
+                <input id="dateInput" type="date" />
+              </div>
+              <div>
+                <label>Ai đi lấy đồ</label>
+                <input id="collectorInput" type="text" placeholder="Tên người đi lấy" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>Tổng tiền (VND)</label>
+                <input id="totalInput" type="number" inputmode="decimal" min="0" step="1000" placeholder="vd: 350000" />
+              </div>
+              <div>
+                <label>Chọn người ăn hôm nay (tick nhanh từ danh sách cố định)</label>
+                <div id="rosterChecklist" class="checklist"></div>
+                <div class="row-3">
+                  <input id="quickAddName" type="text" placeholder="Thêm nhanh tên lẻ (tuỳ chọn)" />
+                  <button class="btn ghost" id="addQuickBtn" type="button">+ Thêm</button>
+                </div>
+                <div id="quickNamesWrap" class="participants"></div>
+              </div>
+            </div>
+            <div class="btns">
+              <button class="btn secondary" id="prepareBtn">Tính & Chuẩn bị</button>
+              <button class="btn ghost" id="clearBtn" type="button">Xóa form</button>
+            </div>
+
+            <div id="preview" class="hidden">
+              <hr />
+              <div class="row">
+                <div>
+                  <div class="muted">Số người</div>
+                  <div class="chip"><span id="numPeopleOut">0</span></div>
+                </div>
+                <div>
+                  <div class="muted">Mỗi người</div>
+                  <div class="chip mono" id="perPersonOut">0 ₫</div>
+                </div>
+              </div>
+
+              <div class="participants" id="participantsEditor"></div>
+
+              <div class="btns">
+                <button class="btn" id="saveBtn">Lưu vào Firestore</button>
+                <button class="btn ghost" id="cancelEditBtn">Hủy chỉnh sửa</button>
+              </div>
+            </div>
+
+            <p class="muted">💡 Mẹo: Tick nhanh từ danh sách cố định. Vào tab <b>Cài đặt</b> để thêm/xoá người trong danh sách.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Lọc & Tổng quan</h2>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div>
+                <label>Tìm theo tên người ăn</label>
+                <input id="filterName" type="text" placeholder="Gõ tên để lọc lịch sử" />
+              </div>
+              <div>
+                <label>Khoảng ngày (từ)</label>
+                <input id="filterFrom" type="date" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>Khoảng ngày (đến)</label>
+                <input id="filterTo" type="date" />
+              </div>
+              <div style="align-self:end">
+                <button class="btn secondary" id="applyFilterBtn">Áp dụng lọc</button>
+                <button class="btn ghost" id="resetFilterBtn">Xóa lọc</button>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div>
+                <div class="muted">Tổng lượt</div>
+                <div class="chip"><span id="totalTrips">0</span></div>
+              </div>
+              <div>
+                <div class="muted">Tổng tiền</div>
+                <div class="chip mono" id="totalAmount">0 ₫</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Cài đặt – Danh sách người ăn</h2>
+          </div>
+          <div class="card-body">
+            <p class="muted">Danh sách tick nhanh dùng mỗi ngày. Mặc định có 9 người: A, B, C, D, E, F, G, H, I.</p>
+            <div id="settingsList" class="participants"></div>
+            <div class="row-3">
+              <input id="newNameInput" type="text" placeholder="Thêm người (vd: Tú)" />
+              <button class="btn secondary" id="addNameBtn">+ Thêm vào danh sách</button>
+            </div>
+            <div class="btns">
+              <button class="btn" id="saveSettingsBtn">Lưu danh sách</button>
+              <button class="btn ghost" id="resetDefaultBtn">Khôi phục mặc định (A→I)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="card-header"><h2>Lịch sử</h2></div>
+        <div class="card-body" style="overflow:auto">
+          <table id="historyTable">
+            <thead>
+              <tr>
+                <th>Ngày</th>
+                <th>Người lấy</th>
+                <th class="right">Tổng (₫)</th>
+                <th class="right">Số người</th>
+                <th class="right">Mỗi người (₫)</th>
+                <th>Danh sách & Trạng thái trả</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- VÒNG QUAY -->
+    <section id="wheel" class="tab">
+      <div class="card">
+        <div class="card-header"><h2>Vòng quay chọn người đi lấy</h2></div>
+        <div class="card-body">
+          <p class="muted">Chọn người tham gia vòng quay rồi bấm <b>Quay</b>. Danh sách lấy từ “Cài đặt”.</p>
+          <div id="wheelChecklist" class="checklist"></div>
+          <div class="btns">
+            <button class="btn" id="spinBtn">🎯 Quay</button>
+            <button class="btn ghost" id="resetWheelBtn">Bỏ chọn</button>
+          </div>
+          <div class="wheel-wrap">
+            <div id="wheelDisk" class="wheel"></div>
+            <div class="pointer">▲</div>
+          </div>
+          <div id="winner" class="winner muted">Người trúng: —</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMING SOON -->
+    <section id="coming" class="tab">
+      <div class="card">
+        <div class="card-header"><h2>Coming soon</h2></div>
+        <div class="card-body">
+          <p class="muted">Sẽ có thêm các tính năng khác… (gợi ý: thống kê theo tháng, xuất Excel, QR trả tiền Momo/ZaloPay, v.v.)</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">© 2025 Ăn Cơm Bây Ơi</div>
+  </footer>
+
+  <!-- 1) DÁN CONFIG FIREBASE Ở app.js (firebaseConfig) -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

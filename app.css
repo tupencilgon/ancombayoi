@@ -1,0 +1,66 @@
+
+:root {
+  --bg: #fbfdfb;
+  --card: #ffffff;
+  --ink: #102a43;
+  --muted: #486581;
+  --brand: #0a7b42;
+  --accent: #e8f5ef;
+  --danger: #b00020;
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background: var(--bg); color: var(--ink); }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.site-header { position: sticky; top: 0; z-index: 10; background: #f6fff9; border-bottom: 1px solid #e6eff2; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+.brand { font-size: 20px; margin: 0; }
+.nav { display: flex; gap: 10px; }
+.nav-link { text-decoration: none; padding: 8px 12px; border-radius: 999px; color: var(--ink); border: 1px solid transparent; }
+.nav-link.active, .nav-link:hover { background: var(--accent); border-color: #d9efe3; }
+
+.grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 20px 0; }
+@media (min-width: 1100px) { .grid { grid-template-columns: 1.2fr .9fr .9fr; } }
+
+.card { background: var(--card); border: 1px solid #e6eff2; border-radius: var(--radius); box-shadow: 0 6px 20px rgba(16,42,67,0.04); }
+.card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid #edf3f6; }
+.card-body { padding: 16px 18px; display: grid; gap: 14px; }
+
+label { font-size: 14px; color: var(--muted); display:block; margin-bottom: 6px; }
+input[type="text"], input[type="number"], input[type="date"] { width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid #d9e5ea; outline: none; background: #fff; font-size: 15px; }
+
+.row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row-3 { display:grid; grid-template-columns: 1fr auto; gap:10px; }
+.btns { display:flex; flex-wrap:wrap; gap: 10px; }
+button { appearance: none; border: 0; border-radius: 999px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+.btn { background: var(--brand); color:#fff; }
+.btn.secondary { background: #eef7f2; color: #065f35; }
+.btn.ghost { background: transparent; color: var(--muted); border: 1px solid #d9e5ea; }
+.btn.danger { background: var(--danger); color: #fff; }
+.chip { display:inline-flex; align-items:center; gap:8px; background: var(--accent); color:#0a5b34; padding:6px 10px; border-radius: 999px; font-size: 12px; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #eef2f6; vertical-align: top; }
+th { font-size: 13px; color: var(--muted); font-weight: 600; }
+tbody tr:hover { background: #f9fcfb; }
+
+.participants { display: grid; gap: 6px; }
+.participant-row { display:flex; align-items:center; gap: 8px; }
+.participant-row input[type="text"] { flex: 1; }
+.muted { color: var(--muted); font-size: 13px; }
+.right { text-align: right; }
+.mono { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+.hidden { display:none; }
+
+.checklist { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px 16px; }
+@media (min-width: 640px){ .checklist { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+.check-item { display:flex; align-items:center; gap:8px; padding:6px 8px; border:1px solid #e6eff2; border-radius: 12px; }
+
+.tab { display: none; margin-top: 16px; }
+.tab.active { display: block; }
+
+.wheel-wrap { position: relative; width: 320px; height: 320px; margin: 16px auto; }
+.wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #d9e5ea; display: grid; place-items: center; user-select: none; transition: transform 3s cubic-bezier(.2,.8,.2,1); background: conic-gradient(from 0deg, #f3f7f9 0 25%, #ffffff 0 50%, #f3f7f9 0 75%, #ffffff 0 100%); }
+.pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); font-size: 20px; }
+.winner { text-align:center; font-size: 16px; }
+.site-footer { border-top: 1px solid #e6eff2; padding: 16px 0; margin-top: 32px; font-size: 13px; color: var(--muted); }
