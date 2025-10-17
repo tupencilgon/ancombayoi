@@ -14,11 +14,14 @@ window.addEventListener('load',()=>setActiveTab((location.hash||'#calc').slice(1
 
 // ===== Firebase (dán config của bạn vào đây) =====
 const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_AUTH_DOMAIN",
-  projectId: "PASTE_PROJECT_ID",
-};
-
+apiKey: "AIzaSyDF4YK414BcnwNbxOxFXUMrJIlj6Kwsr6Q",
+authDomain: "ancombayoi.firebaseapp.com",
+projectId: "ancombayoi",
+storageBucket: "ancombayoi.firebasestorage.app",
+messagingSenderId: "902949856979",
+appId: "1:902949856979:web:b39c718a90fe97cfb0d626",
+measurementId: "G-QHDXHG5WV8"
+}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import {
   getFirestore, collection, addDoc, getDocs, getDoc, setDoc,
