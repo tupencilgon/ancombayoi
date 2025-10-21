@@ -61,7 +61,6 @@ const saveSettingsBtn=$("saveSettingsBtn"), resetDefaultBtn=$("resetDefaultBtn")
 // Wheel
 // Wheel
 
-const wheelChecklist = $("wheelChecklist");
 const spinBtn = $("spinBtn");
 const resetWheelBtn = $("resetWheelBtn");
 const wheelSpinner = $("wheelSpinner");   // <— đổi: lấy wrapper mới
