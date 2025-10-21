@@ -129,25 +129,6 @@ function drawWheel(names){
   ctx.strokeStyle = '#d9e5ea';
   ctx.stroke();
 }
-function renderWheelChecklist() {
-  wheelChecklist.innerHTML = '';
-  roster.forEach((name, idx) => {
-    const id = `wh_${idx}`;
-    const item = document.createElement('label');
-    item.className = 'check-item';
-    item.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}" checked><span>${name}</span>`;
-    wheelChecklist.appendChild(item);
-  });
-
-  // vẽ lần đầu theo pool mặc định (checked hết)
-  drawWheel(getWheelPool());
-
-  // thay đổi tick -> vẽ lại
-  wheelChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
-    cb.addEventListener('change', ()=> drawWheel(getWheelPool()));
-  });
-}
-
 
 // const wheelDisk=$("wheelDisk"), winnerEl=$("winner");
 
