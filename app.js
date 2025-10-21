@@ -173,7 +173,7 @@ function renderRosterChecklist() {
     item.className = 'check-item';
     item.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}"><span>${name}</span>`;
     rosterChecklist.appendChild(item);
-  });
+  })};
 addNameBtn.addEventListener('click',()=>{
   const v=(newNameInput.value||'').trim(); if(!v) return;
   roster.push(v); newNameInput.value=''; renderSettingsList(); renderRosterChecklist();
