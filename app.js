@@ -165,6 +165,15 @@ function renderSettingsList(){
     });
   });
 }
+function renderRosterChecklist() {
+  rosterChecklist.innerHTML = '';
+  roster.forEach((name, idx) => {
+    const id = `ro_${idx}`;
+    const item = document.createElement('label');
+    item.className = 'check-item';
+    item.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}"><span>${name}</span>`;
+    rosterChecklist.appendChild(item);
+  });
 addNameBtn.addEventListener('click',()=>{
   const v=(newNameInput.value||'').trim(); if(!v) return;
   roster.push(v); newNameInput.value=''; renderSettingsList(); renderRosterChecklist();
