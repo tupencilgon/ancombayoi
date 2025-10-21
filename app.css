@@ -67,6 +67,19 @@ tbody tr:hover{background:#f9fcfb}
 .blur-bg{filter:blur(3px);pointer-events:none}
 
 /* Wheel */
+/* Wheel canvas wrapper xoay mượt */
+.wheel-spinner{
+  width: 320px; height: 320px;
+  margin: 0 auto;
+  border-radius: 50%;
+  transition: transform 3s cubic-bezier(.2,.8,.2,1);
+}
+#wheelCanvas{
+  display:block; width: 320px; height: 320px;
+  border-radius: 50%;
+  background: #fff;
+}
+
 .wheel-wrap{position:relative;width:320px;height:320px;margin:16px auto}
 .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #d9e5ea;display:grid;place-items:center;user-select:none;transition:transform 3s cubic-bezier(.2,.8,.2,1);background:conic-gradient(from 0deg,#f3f7f9 0 25%,#ffffff 0 50%,#f3f7f9 0 75%,#ffffff 0 100%)}
 .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:20px}
