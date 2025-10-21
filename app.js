@@ -141,7 +141,8 @@ dateInput.value=todayISO();
 async function ensureRoster(){
   const snap=await getDoc(rosterDoc);
   if(!snap.exists()){ await setDoc(rosterDoc,{names:DEFAULT_ROSTER,updatedAt:serverTimestamp()}); return DEFAULT_ROSTER; }
-  const data=snap.data(); return Array.isArray(data.names)?data.names:DEFAULT_ROSTER;
+  const data=snap.data(); return Array.isArray(data.names)?data.names:DEFAULT_ROSTER
+};
 
 function renderSettingsList(){
   settingsList.innerHTML='';
