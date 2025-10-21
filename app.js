@@ -173,19 +173,29 @@ function renderRosterChecklist() {
     item.className = 'check-item';
     item.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}"><span>${name}</span>`;
     rosterChecklist.appendChild(item);
-  })};
+  });
+
+  // Đồng bộ checklist của tab "Vòng quay"
+  if (typeof renderWheelChecklist === 'function') {
+    renderWheelChecklist();
+  }
+}
 addNameBtn.addEventListener('click',()=>{
   const v=(newNameInput.value||'').trim(); if(!v) return;
-  roster.push(v); newNameInput.value=''; renderSettingsList(); renderRosterChecklist();
+  roster.push(v); newNameInput.value='';
+  renderSettingsList(); renderRosterChecklist();
 });
 resetDefaultBtn.addEventListener('click',()=>{
   if(!confirm('Khôi phục danh sách mặc định A→I?')) return;
-  roster=[...DEFAULT_ROSTER]; renderSettingsList(); renderRosterChecklist();
+  roster=[...DEFAULT_ROSTER];
+  renderSettingsList(); renderRosterChecklist();
 });
 saveSettingsBtn.addEventListener('click',async()=>{
   const clean=roster.map(n=>(n||'').trim()).filter(Boolean);
   await setDoc(rosterDoc,{names:clean,updatedAt:serverTimestamp()});
-  roster=clean; renderSettingsList(); renderRosterChecklist(); alert('Đã lưu danh sách.');
+  roster=clean;
+  renderSettingsList(); renderRosterChecklist();
+  alert('Đã lưu danh sách.');
 });
 
 // ===== Quick names =====
