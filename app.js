@@ -59,8 +59,98 @@ const settingsList=$("settingsList"), newNameInput=$("newNameInput"), addNameBtn
 const saveSettingsBtn=$("saveSettingsBtn"), resetDefaultBtn=$("resetDefaultBtn");
 
 // Wheel
+// Wheel
+
+const wheelChecklist = $("wheelChecklist");
+const spinBtn = $("spinBtn");
+const resetWheelBtn = $("resetWheelBtn");
+const wheelSpinner = $("wheelSpinner");   // <— đổi: lấy wrapper mới
+const wheelCanvas  = $("wheelCanvas");
+const winnerEl     = $("winner");
+
+// Popup winner
+const winnerOverlay = $("winnerOverlay");
+const winnerNameEl  = $("winnerName");
+const closeWinnerBtn= $("closeWinnerBtn");
+//Wheel
+function getWheelPool(){
+  return Array
+    .from(wheelChecklist.querySelectorAll('input[type="checkbox"]:checked'))
+    .map(cb => cb.getAttribute('data-name'))
+    .filter(Boolean);
+}
+
+// Vẽ bánh xe: chia đều theo pool
+function drawWheel(names){
+  const ctx = wheelCanvas.getContext('2d');
+  const W = wheelCanvas.width, H = wheelCanvas.height;
+  const cx = W/2, cy = H/2, r = Math.min(cx, cy);
+  ctx.clearRect(0,0,W,H);
+
+  if (!names.length){
+    // khung mặc định
+    ctx.beginPath(); ctx.arc(cx,cy,r-3,0,Math.PI*2);
+    ctx.fillStyle = '#f3f7f9'; ctx.fill();
+    ctx.strokeStyle = '#d9e5ea'; ctx.lineWidth = 6; ctx.stroke();
+    return;
+  }
+
+  const n = names.length;
+  const slice = 2*Math.PI / n;
+  for (let i=0;i<n;i++){
+    const start = i*slice, end = start + slice;
+
+    // màu lát: HSL theo index để đa dạng
+    const hue = Math.round(360*(i/n));
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r-3,start,end);
+    ctx.closePath();
+    ctx.fillStyle = `hsl(${hue}deg 70% 90%)`;
+    ctx.fill();
+    ctx.strokeStyle = '#d9e5ea';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // chữ tên
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(start + slice/2);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#102a43';
+    ctx.font = '14px system-ui';
+    ctx.fillText(names[i], (r*0.62), 5);
+    ctx.restore();
+  }
+
+  // viền ngoài
+  ctx.beginPath();
+  ctx.arc(cx,cy,r-3,0,Math.PI*2);
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = '#d9e5ea';
+  ctx.stroke();
+}
+function renderWheelChecklist() {
+  wheelChecklist.innerHTML = '';
+  roster.forEach((name, idx) => {
+    const id = `wh_${idx}`;
+    const item = document.createElement('label');
+    item.className = 'check-item';
+    item.innerHTML = `<input type="checkbox" id="${id}" data-name="${name}" checked><span>${name}</span>`;
+    wheelChecklist.appendChild(item);
+  });
+
+  // vẽ lần đầu theo pool mặc định (checked hết)
+  drawWheel(getWheelPool());
+
+  // thay đổi tick -> vẽ lại
+  wheelChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    cb.addEventListener('change', ()=> drawWheel(getWheelPool()));
+  });
+}
+
 const wheelChecklist=$("wheelChecklist"), spinBtn=$("spinBtn"), resetWheelBtn=$("resetWheelBtn");
-const wheelDisk=$("wheelDisk"), winnerEl=$("winner");
+// const wheelDisk=$("wheelDisk"), winnerEl=$("winner");
 
 // ===== State =====
 let editingDocId=null, currentParticipants=[], roster=[], quickNames=[];
@@ -279,6 +369,8 @@ applyFilterBtn.addEventListener('click',()=>{ loadHistory(); closeFilterBtn.clic
 resetFilterBtn.addEventListener('click',()=>{ filterName.value=''; filterFrom.value=''; filterTo.value=''; loadHistory(); });
 
 // ===== Wheel =====
+const spinsCol = collection(db, 'spins'); // <— thêm dòng này
+
 function renderWheelChecklist(){
   wheelChecklist.innerHTML='';
   roster.forEach((name,idx)=>{
@@ -287,15 +379,64 @@ function renderWheelChecklist(){
     wheelChecklist.appendChild(item);
   });
 }
-resetWheelBtn.addEventListener('click',()=>{ wheelChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb=>cb.checked=false); winnerEl.textContent='Người trúng: —'; wheelDisk.style.transform='rotate(0deg)'; });
-spinBtn.addEventListener('click',()=>{
-  const pool=Array.from(wheelChecklist.querySelectorAll('input[type="checkbox"]:checked')).map(cb=>cb.getAttribute('data-name')).filter(Boolean);
-  if(pool.length<2){ alert('Chọn ít nhất 2 người để quay.'); return; }
-  const spins=5+Math.floor(Math.random()*3);
-  const winnerIndex=Math.floor(Math.random()*pool.length);
-  const degPer=360/pool.length, stopDeg=360-winnerIndex*degPer+2*degPer/3, totalDeg=spins*360+stopDeg;
-  wheelDisk.style.transform=`rotate(${totalDeg}deg)`;
-  setTimeout(()=>{ winnerEl.textContent=`Người trúng: ${pool[winnerIndex]} 🎉`; },3000);
+resetWheelBtn.addEventListener('click', () => {
+  wheelChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  winnerEl.textContent = 'Người trúng: —';
+  wheelSpinner.style.transform = 'rotate(0deg)';  // reset góc xoay
+  drawWheel(getWheelPool());
+});
+
+spinBtn.addEventListener('click', async () => {
+  const pool = getWheelPool();
+  if (pool.length < 2) { alert('Chọn ít nhất 2 người để quay.'); return; }
+
+  // random đều
+  const winnerIndex = Math.floor(Math.random() * pool.length);
+
+  // Tính góc dừng: mũi tên ở trên (0deg) trỏ vào tâm lát người thắng
+  // Mỗi lát = degPer; tâm lát i = i*degPer + degPer/2
+  const degPer = 360 / pool.length;
+  const winnerCenter = winnerIndex * degPer + degPer/2;
+
+  // Quay nhiều vòng + canh tâm lát người thắng trùng mũi tên
+  const spins = 6; // số vòng
+  const totalDeg = spins*360 + (360 - winnerCenter); // 360 - center để mũi tên ở top
+
+  // reset transition nếu đang xoay
+  wheelSpinner.style.transition = 'none';
+  // force reflow to apply new transition later
+  // eslint-disable-next-line no-unused-expressions
+  wheelSpinner.offsetHeight;
+  wheelSpinner.style.transition = 'transform 3s cubic-bezier(.2,.8,.2,1)';
+  wheelSpinner.style.transform = `rotate(${totalDeg}deg)`;
+
+  // chờ kết thúc animation
+  setTimeout(async () => {
+    const winner = pool[winnerIndex];
+    winnerEl.textContent = `Người trúng: ${winner} 🎉`;
+
+    // popup chúc mừng
+    winnerNameEl.textContent = winner;
+    winnerOverlay.classList.remove('hidden');
+    appRoot.classList.add('blur-bg');
+
+    // lưu lịch sử quay
+    try{
+      await addDoc(spinsCol, {
+        at: serverTimestamp(),
+        candidates: pool,
+        count: pool.length,
+        winner: winner
+      });
+    }catch(err){
+      console.error('Lỗi lưu lịch sử quay:', err);
+    }
+  }, 3000); // khớp với thời gian transition
+});
+
+closeWinnerBtn.addEventListener('click', ()=>{
+  winnerOverlay.classList.add('hidden');
+  appRoot.classList.remove('blur-bg');
 });
 
 // ===== Init =====
