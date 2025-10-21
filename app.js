@@ -161,17 +161,7 @@ async function ensureRoster(){
   const snap=await getDoc(rosterDoc);
   if(!snap.exists()){ await setDoc(rosterDoc,{names:DEFAULT_ROSTER,updatedAt:serverTimestamp()}); return DEFAULT_ROSTER; }
   const data=snap.data(); return Array.isArray(data.names)?data.names:DEFAULT_ROSTER;
-}
-function renderRosterChecklist(){
-  rosterChecklist.innerHTML='';
-  roster.forEach((name,idx)=>{
-    const item=document.createElement('label');
-    item.className='check-item';
-    item.innerHTML=`<input type="checkbox" data-name="${name}" id="ro_${idx}"><span>${name}</span>`;
-    rosterChecklist.appendChild(item);
-  });
-  renderWheelChecklist();
-}
+
 function renderSettingsList(){
   settingsList.innerHTML='';
   roster.forEach((name,idx)=>{
@@ -370,12 +360,19 @@ resetFilterBtn.addEventListener('click',()=>{ filterName.value=''; filterFrom.va
 // ===== Wheel =====
 const spinsCol = collection(db, 'spins'); // <— thêm dòng này
 
-function renderWheelChecklist(){
-  wheelChecklist.innerHTML='';
-  roster.forEach((name,idx)=>{
-    const item=document.createElement('label'); item.className='check-item';
-    item.innerHTML=`<input type="checkbox" data-name="${name}" id="wh_${idx}" checked><span>${name}</span>`;
+function renderWheelChecklist() {
+  wheelChecklist.innerHTML = '';
+  roster.forEach((name, idx) => {
+    const item = document.createElement('label');
+    item.className = 'check-item';
+    item.innerHTML = `<input type="checkbox" id="wh_${idx}" data-name="${name}" checked><span>${name}</span>`;
     wheelChecklist.appendChild(item);
+  });
+
+  // vẽ lần đầu & cập nhật khi tick đổi
+  drawWheel(getWheelPool());
+  wheelChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    cb.addEventListener('change', ()=> drawWheel(getWheelPool()));
   });
 }
 resetWheelBtn.addEventListener('click', () => {
