@@ -379,33 +379,47 @@ function renderWheelChecklist() {
 resetWheelBtn.addEventListener('click', () => {
   wheelChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
   winnerEl.textContent = 'Người trúng: —';
-  wheelSpinner.style.transform = 'rotate(0deg)';  // reset góc xoay
+
+  // reset góc và bỏ easing
+  wheelSpinner.style.transition = 'transform 8s cubic-bezier(0.1, 0.9, 0.3, 1)';
+  wheelSpinner.style.transform  = 'rotate(0deg)';
+  // force reflow
+  // eslint-disable-next-line no-unused-expressions
+  wheelSpinner.offsetHeight;
+
   drawWheel(getWheelPool());
 });
+
 
 spinBtn.addEventListener('click', async () => {
   const pool = getWheelPool();
   if (pool.length < 2) { alert('Chọn ít nhất 2 người để quay.'); return; }
 
-  // random đều
+  // 1) Chọn người thắng NGẪU NHIÊN (tỉ lệ đều nhau)
   const winnerIndex = Math.floor(Math.random() * pool.length);
 
-  // Tính góc dừng: mũi tên ở trên (0deg) trỏ vào tâm lát người thắng
-  // Mỗi lát = degPer; tâm lát i = i*degPer + degPer/2
-  const degPer = 360 / pool.length;
-  const winnerCenter = winnerIndex * degPer + degPer/2;
+  // 2) Tính góc dừng đúng tâm lát NGAY DƯỚI KIM
+  //    - 0° của bánh là hướng bên phải (3h)
+  //    - Kim ở đỉnh (12h) = 270°
+  const degPer        = 360 / pool.length;
+  const centerOfSlice = winnerIndex * degPer + degPer / 2;
 
-  // Quay nhiều vòng + canh tâm lát người thắng trùng mũi tên
-  const spins = 6; // số vòng
-  const totalDeg = spins*360 + (360 - winnerCenter); // 360 - center để mũi tên ở top
+  // 3) Tránh rơi ngay biên lát: thêm jitter nhỏ nằm gọn trong lát
+  const jitterMax     = degPer * 0.25;                 // ±25% bề rộng lát
+  const jitter        = (Math.random() * 2 - 1) * jitterMax;
+  const targetAngle   = centerOfSlice + jitter;        // vẫn nằm trong lát
 
-  // reset transition nếu đang xoay
+  // 4) Tổng góc quay: nhiều vòng + căn sao cho targetAngle -> 12h (270°)
+  const spins    = 6;                                  // số vòng
+  const totalDeg = spins * 360 + (270 - targetAngle);  // 270° = đỉnh
+
+  // 5) Quay với tốc độ đều (linear) để không chậm ở cuối
   wheelSpinner.style.transition = 'none';
-  // force reflow to apply new transition later
+  // force reflow
   // eslint-disable-next-line no-unused-expressions
   wheelSpinner.offsetHeight;
-  wheelSpinner.style.transition = 'transform 3s cubic-bezier(.2,.8,.2,1)';
-  wheelSpinner.style.transform = `rotate(${totalDeg}deg)`;
+  wheelSpinner.style.transition = 'transform 8s cubic-bezier(0.1, 0.9, 0.3, 1)';
+  wheelSpinner.style.transform  = `rotate(${totalDeg}deg)`;
 
   // chờ kết thúc animation
   setTimeout(async () => {
@@ -428,7 +442,7 @@ spinBtn.addEventListener('click', async () => {
     }catch(err){
       console.error('Lỗi lưu lịch sử quay:', err);
     }
-  }, 3000); // khớp với thời gian transition
+  }, 8000); // khớp với thời gian transition
 });
 
 closeWinnerBtn.addEventListener('click', ()=>{
