@@ -127,10 +127,14 @@
             <button class="btn ghost" id="resetWheelBtn">Bỏ chọn</button>
           </div>
           <div class="wheel-wrap">
-            <div id="wheelDisk" class="wheel"></div>
-            <div class="pointer">▲</div>
-          </div>
-          <div id="winner" class="winner muted">Người trúng: —</div>
+  <!-- Phần này sẽ xoay bằng CSS transform -->
+  <div id="wheelSpinner" class="wheel-spinner">
+    <canvas id="wheelCanvas" width="320" height="320"></canvas>
+  </div>
+  <div class="pointer">▲</div>
+</div>
+<div id="winner" class="winner muted">Người trúng: —</div>
+
         </div>
       </div>
     </section>
@@ -197,5 +201,24 @@
   </footer>
 
   <script type="module" src="app.js"></script>
+  <!-- POPUP CHÚC MỪNG NGƯỜI TRÚNG -->
+<div id="winnerOverlay" class="overlay hidden">
+  <div class="overlay-backdrop"></div>
+  <div class="overlay-panel" style="max-width:420px">
+    <div class="panel-header">
+      <h3>🎉 Kết quả vòng quay</h3>
+      <button id="closeWinnerBtn" class="btn ghost small">Đóng</button>
+    </div>
+    <div class="panel-body" style="text-align:center">
+      <div class="chip" style="font-size:18px; padding:10px 14px">
+        Người trúng: <b id="winnerName"></b>
+      </div>
+      <p class="muted" style="margin-top:10px">
+        Đã lưu lịch sử quay vào Firestore.
+      </p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
