@@ -60,7 +60,7 @@ const saveSettingsBtn=$("saveSettingsBtn"), resetDefaultBtn=$("resetDefaultBtn")
 
 // Wheel
 // Wheel
-
+const wheelChecklist=$("wheelChecklist");
 const spinBtn = $("spinBtn");
 const resetWheelBtn = $("resetWheelBtn");
 const wheelSpinner = $("wheelSpinner");   // <— đổi: lấy wrapper mới
@@ -148,7 +148,7 @@ function renderWheelChecklist() {
   });
 }
 
-const wheelChecklist=$("wheelChecklist"), spinBtn=$("spinBtn"), resetWheelBtn=$("resetWheelBtn");
+
 // const wheelDisk=$("wheelDisk"), winnerEl=$("winner");
 
 // ===== State =====
