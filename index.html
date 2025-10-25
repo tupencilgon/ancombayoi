@@ -123,20 +123,18 @@
           <p class="muted">Chọn người tham gia vòng quay rồi bấm <b>Quay</b>. Danh sách lấy từ “Cài đặt”.</p>
           <div id="wheelChecklist" class="checklist"></div>
           <div class="btns">
-            <button class="btn" id="spinBtn">🎯 Quay</button>
             <button class="btn ghost" id="resetWheelBtn">Bỏ chọn</button>
           </div>
-          <div class="wheel-wrap">
-  <!-- Phần này sẽ xoay bằng CSS transform -->
+         <div class="wheel-wrap">
   <div id="wheelSpinner" class="wheel-spinner">
     <canvas id="wheelCanvas" width="320" height="320"></canvas>
+
+    <!-- THÊM nút quay vào giữa -->
+    <button class="btn spin-center" id="spinBtn">🎯 Quay</button>
   </div>
   <div class="pointer">▲</div>
 </div>
-<div id="winner" class="winner muted">Người trúng: —</div>
 
-        </div>
-      </div>
     </section>
 
     <!-- CÀI ĐẶT (THAY CHO COMING SOON) -->
