@@ -60,6 +60,7 @@ const saveSettingsBtn=$("saveSettingsBtn"), resetDefaultBtn=$("resetDefaultBtn")
 
 // Wheel
 // Wheel
+const spinsTbody = $("spinsTbody");
 const wheelChecklist=$("wheelChecklist");
 const spinBtn = $("spinBtn");
 const resetWheelBtn = $("resetWheelBtn");
@@ -439,6 +440,7 @@ spinBtn.addEventListener('click', async () => {
         count: pool.length,
         winner: winner
       });
+      await loadSpinHistory();
     }catch(err){
       console.error('Lỗi lưu lịch sử quay:', err);
     }
@@ -449,11 +451,43 @@ closeWinnerBtn.addEventListener('click', ()=>{
   winnerOverlay.classList.add('hidden');
   appRoot.classList.remove('blur-bg');
 });
+function fmtTime(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  // hiển thị dd/MM HH:mm
+  return d.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+}
+
+function renderSpinHistory(rows){
+  if (!spinsTbody) return;
+  spinsTbody.innerHTML = '';
+  rows.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${fmtTime(r.at)}</td>
+      <td><b>${r.winner}</b></td>
+      <td class="muted">${(r.candidates||[]).join(', ')}</td>
+    `;
+    spinsTbody.appendChild(tr);
+  });
+}
+
+async function loadSpinHistory(){
+  try{
+    const snap = await getDocs(query(spinsCol, orderBy('at','desc')));
+    const rows = snap.docs.map(d=>d.data()).slice(0,20); // lấy 20 bản ghi gần nhất
+    renderSpinHistory(rows);
+  }catch(e){
+    console.error('Không tải được lịch sử quay:', e);
+  }
+}
 
 // ===== Init =====
 (async function init(){
+
   dateInput.value=todayISO();
   roster = await ensureRoster();
   renderRosterChecklist(); renderSettingsList();
   await loadHistory();
+    await loadSpinHistory();
 })();
