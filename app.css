@@ -74,6 +74,18 @@ tbody tr:hover{background:#f9fcfb}
   border-radius: 50%;
   transition: transform 3s cubic-bezier(.2,.8,.2,1);
 }
+.wheel-wrap{ position: relative; }           /* để con absolute bám vào */
+.wheel-spinner{ position: relative; }        /* vẫn OK nếu giữ */
+.spin-center{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 3;                                 /* trên canvas & spinner */
+  padding: 12px 18px;
+}
+.pointer{ z-index: 4; }
+
 .wheel-spinner{ position: relative; }               /* để con absolute bám vào */
 .spin-center{
   position: absolute;
