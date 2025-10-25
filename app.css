@@ -90,6 +90,10 @@ tbody tr:hover{background:#f9fcfb}
   border-radius: 50%;
   background: #fff;
 }
+/* Layout lich su vong quay */
+#spinsTable { width:100%; border-collapse:collapse; }
+#spinsTable th, #spinsTable td { padding:8px; border-bottom:1px solid #eef2f6; }
+#spinsTable .mono { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
 .wheel-wrap{position:relative;width:320px;height:320px;margin:16px auto}
 .wheel{width:100%;height:100%;border-radius:50%;border:6px solid #d9e5ea;display:grid;place-items:center;user-select:none;transition:transform 3s cubic-bezier(.2,.8,.2,1);background:conic-gradient(from 0deg,#f3f7f9 0 25%,#ffffff 0 50%,#f3f7f9 0 75%,#ffffff 0 100%)}
