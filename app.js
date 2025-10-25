@@ -448,10 +448,7 @@ spinBtn.addEventListener('click', async () => {
         count: pool.length,
         winner: winner
       });
-          if (typeof loadSpinHistory === 'function') await loadSpinHistory();
-  } catch (err) {
-    console.error('Lỗi lưu lịch sử quay:', err);
-  }
+
       await loadSpinHistory();
     }catch(err){
       console.error('Lỗi lưu lịch sử quay:', err);
