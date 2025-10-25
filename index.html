@@ -128,12 +128,14 @@
          <div class="wheel-wrap">
   <div id="wheelSpinner" class="wheel-spinner">
     <canvas id="wheelCanvas" width="320" height="320"></canvas>
-
-    <!-- THÊM nút quay vào giữa -->
-    <button class="btn spin-center" id="spinBtn">🎯 Quay</button>
   </div>
+
+  <!-- nút nằm đè giữa, là anh em (sibling) của spinner -->
+  <button class="btn spin-center" id="spinBtn">🎯 Quay</button>
+
   <div class="pointer">▲</div>
 </div>
+
 <!-- Lịch sử vòng quay -->
           <h3 class="muted" style="margin-top:16px">Lịch sử quay gần đây</h3>
 <table id="spinsTable">
@@ -210,7 +212,7 @@
     <div class="container">© 2025 Ăn Cơm Bây Ơi</div>
   </footer>
 
-  <script type="module" src="app.js"></script>
+ 
   <!-- POPUP CHÚC MỪNG NGƯỜI TRÚNG -->
 <div id="winnerOverlay" class="overlay hidden">
   <div class="overlay-backdrop"></div>
@@ -229,6 +231,6 @@
     </div>
   </div>
 </div>
-
+ <script type="module" src="app.js"></script>
 </body>
 </html>
