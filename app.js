@@ -48,7 +48,11 @@ const participantsEditor=$("participantsEditor"), saveBtn=$("saveBtn"), cancelEd
 const editBadge=$("editBadge"), formTitle=$("formTitle");
 
 const historyBody=$("historyBody"), totalTrips=$("totalTrips"), totalAmount=$("totalAmount");
-
+// Dom wheel
+['winner','winnerOverlay','winnerName','wheelSpinner','wheelCanvas'].forEach(id=>{
+  if(!$(`${id}`)) console.error('Missing DOM element:', id);
+});
+  
 // Overlay filter
 const appRoot=$("appRoot"), openFilterBtn=$("openFilterBtn"), filterOverlay=$("filterOverlay");
 const closeFilterBtn=$("closeFilterBtn"), filterName=$("filterName"), filterFrom=$("filterFrom"), filterTo=$("filterTo");
@@ -425,12 +429,16 @@ spinBtn.addEventListener('click', async () => {
   // chờ kết thúc animation
   setTimeout(async () => {
     const winner = pool[winnerIndex];
-    winnerEl.textContent = `Người trúng: ${winner} 🎉`;
+      if (winnerEl)      winnerEl.textContent = `Người trúng: ${winner} 🎉`;
+  if (winnerNameEl)  winnerNameEl.textContent = winner;
+  if (winnerOverlay) winnerOverlay.classList.remove('hidden');
+  if (appRoot)       appRoot.classList.add('blur-bg');
+ //   winnerEl.textContent = `Người trúng: ${winner} 🎉`;
 
     // popup chúc mừng
-    winnerNameEl.textContent = winner;
-    winnerOverlay.classList.remove('hidden');
-    appRoot.classList.add('blur-bg');
+ //   winnerNameEl.textContent = winner;
+  //  winnerOverlay.classList.remove('hidden');
+   // appRoot.classList.add('blur-bg');
 
     // lưu lịch sử quay
     try{
@@ -440,6 +448,10 @@ spinBtn.addEventListener('click', async () => {
         count: pool.length,
         winner: winner
       });
+          if (typeof loadSpinHistory === 'function') await loadSpinHistory();
+  } catch (err) {
+    console.error('Lỗi lưu lịch sử quay:', err);
+  }
       await loadSpinHistory();
     }catch(err){
       console.error('Lỗi lưu lịch sử quay:', err);
